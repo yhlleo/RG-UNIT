@@ -46,7 +46,7 @@ mv img_align_celeba images
    - [`models/ret_gmm_00020000.pt`](https://drive.google.com/file/d/1DQysTWCLgL7b-izdoJdzr8unzTXv0dKA/view?usp=sharing)
      - [`models/images_embeddings_gmm.json`](https://drive.google.com/file/d/11nSjoFfIo4kcwkULJ6HsTFkYgrQlY9BL/view?usp=sharing)
 
-### Training
+### 4 Training
 
  - a) Preparing GMM-UNIT: copy the model into `./models/celeba_gmm_gen.pt`
 
@@ -54,6 +54,9 @@ mv img_align_celeba images
 
  - c) Training GMM-UNIT + Retrieval: `sh ./scripts/celeba_gmmunit_retrieval.sh 0 0`
 
+### Evaluation codes
+
+We evaluate the performances of the compared models mainly based on this repo: [GAN-Metrics](https://github.com/yhlleo/GAN-Metrics)
 
 ### References
 

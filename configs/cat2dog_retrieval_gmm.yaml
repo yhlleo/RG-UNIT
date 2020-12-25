@@ -1,0 +1,75 @@
+dataset: Cat2Dog               # dataset name              
+snapshot_save_iter: 5000      # How often do you want to save trained models (Also saving them with when val loss is best)
+log_iter: 200                 # How often do you want to log the training stats
+plot: 'True'
+eval_and_plot_freq: 2000       # 500
+gen_path: ./models/cat2dog_gmm_gen.pt
+max_eval_iter: 60             # 62 is dataset max
+#resume_checkpoint: ./models/ret_00010000.pt
+
+# optimization options
+max_iter: 100000              # maximum number of training iterations
+batch_size: 32                # batch size
+weight_decay: 0.0001          # weight decay
+momentum: 0.9
+lr: 0.01                      # initial learning rate # 0.1
+lr_policy: step               # learning rate scheduler
+step_size: 10000              # how often to decay learning rate
+gamma: 0.5                    # how much to decay learning rate
+
+# triplet loss options
+margin: 0.2
+distance_norm_degree: 2
+
+stddev: 0.5
+c_dim: 8                      # selected attributes of face
+v_dim: 1                      # length of style code of each domain
+
+# retrieval model options (conv model is hardcoded in retrieval_networks.py)
+ret:
+  num_layers: 3
+  hidden_size: 512
+  embed_dim: 100
+  norm: ln                    # normalization layer [none/bn/in/ln]
+  activ: relu                 # activation function [relu/lrelu/prelu/selu/tanh]
+  pad_type: reflect           # padding type [zero/reflect]
+  c_dim: 8                    # latent dimension for each attrobute
+  num_cls: 2                
+
+triplets: 
+  num: 3
+  easy: 1                     # Triplets configuration: 1 is use, 0 is don't use
+  medium: 1
+  hard: 0
+  hardest: 1
+
+# eval options
+eval:
+  ret_path: ./models/cat2dog_ret_gmm_00020000.pt
+  num_results: 10              # P@num_results
+  num_qualitative: 200         # Num of qualitative results to be saved
+
+# gen model options
+gen:
+  dim: 64                     # number of filters in the bottommost layer
+  mlp_dim: 256                # number of filters in MLP
+  c_dim: 8                    # selected attributes of face
+  num_cls: 2                 
+  activ: relu                 # activation function [relu/lrelu/prelu/selu/tanh]
+  style_downsample: 2         # number of downsampling layers in style encoder
+  content_downsample: 2       # number of downsampling layers in content encoder
+  n_res: 4                    # number of residual blocks in content encoder/decoder
+  pad_type: reflect           # padding type [zero/reflect]
+  use_attention: False        # using attention [True/False]
+  use_map: True               # use fc layers to the CNN extracted style features [True/False]
+  use_dsn: True               # use Deeply-supervised Nets [True/False]
+
+# data options
+input_dim: 3                  # number of image channels [1/3]
+num_workers: 2                # number of data loading threads
+image_size: 128               # first resize the shortest image side to this size
+crop_size: 128                # random crop image of this height
+data_root: ../datasets/cat2dog
+train_list: ./datasets/cat2dog/train_list.txt
+test_list: ./datasets/cat2dog/test_list.txt
+pretrained_embed: ''

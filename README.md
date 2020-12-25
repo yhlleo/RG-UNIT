@@ -71,3 +71,6 @@ year = {2020},
 doi = {10.1145/3394171.3413785},
 url = {https://doi.org/10.1145/3394171.3413785}
 }
+```
+
+The baseline model GMM-UNIT is based on this paper: [arXiv](https://arxiv.org/pdf/2003.06788.pdf).

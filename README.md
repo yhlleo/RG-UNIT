@@ -73,4 +73,4 @@ url = {https://doi.org/10.1145/3394171.3413785}
 }
 ```
 
-The baseline model GMM-UNIT is based on this paper: [arXiv](https://arxiv.org/pdf/2003.06788.pdf).
+The baseline model GMM-UNIT is based on this paper: [GMM-UNIT: Unsupervised Multi-Domain and Multi-Modal Image-to-Image Translation via Attribute Gaussian Mixture Modeling](https://arxiv.org/pdf/2003.06788.pdf).

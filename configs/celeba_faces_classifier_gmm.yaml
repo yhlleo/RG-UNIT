@@ -21,7 +21,7 @@ input_dim: 3                  # number of image channels [1/3]
 num_workers: 2                # number of data loading threads
 image_size: 224               # first resize the shortest image side to this size
 crop_size: 178                # random crop image of this height
-data_root: ../datasets/celeba/images
+data_root: ./datasets/celeba/images
 train_list: ./datasets/celeba/list_attr_celeba-all.txt
 test_list: ./datasets/celeba/list_attr_celeba-val.txt
 attr_path: ./datasets/celeba/list_attr_celeba.txt

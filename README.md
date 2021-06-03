@@ -60,6 +60,12 @@ mv img_align_celeba images
 
  - c) Training GMM-UNIT + Retrieval: `sh ./scripts/celeba_gmmunit_retrieval.sh 0 0`
 
+### 5 Fast testing
+
+Here, we also provide an example for fast testing.
+
+
+
 ### Evaluation codes
 
 We evaluate the performances of the compared models mainly based on this repo: [GAN-Metrics](https://github.com/yhlleo/GAN-Metrics)

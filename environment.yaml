@@ -1,24 +1,21 @@
 name: rg-unit
 channels:
-- peterjc123
-- menpo
 - conda-forge
-- defaults
+- pytorch
 - anaconda
 dependencies:
-- python=3.6.8
-- pytorch=1.1.0
-- scipy
-- scikit-image
-- scikit-learn
-- torchvision=0.2.1
-- opencv3
+- python=3.6.7
+- pytorch=1.4.0
+- torchvision=0.5.0
+- cudatoolkit=10.0
+- ffmpeg=4.0.2
+- x264
 - pip:
-  - dominate
-  - Pillow==6.1.0
-  - numpy
-  - visdom
-  - matplotlib
-  - tensorboard
-  - tensorboardX
-  - pyyaml
+  - opencv-python==4.1.2.30 
+  - ffmpeg-python==0.2.0 
+  - scikit-image==0.16.2
+  - pillow==7.0.0 
+  - scipy==1.2.1 
+  - tqdm==4.43.0 
+  - munch==2.5.0
+  - requests

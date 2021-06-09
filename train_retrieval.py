@@ -15,7 +15,7 @@ import torch.multiprocessing as mp
 import torch.distributed as distributed
 
 from core import (
-    gmmunit_retrieval_run,
+    retrieval_run,
     get_config
 )
 
@@ -35,7 +35,7 @@ def main(args, opts):
         mp.set_start_method('spawn')
         processes = []
         for rank in range(opts.num_gpus):
-            p = mp.Process(target=init_processes, args=(args, rank, gmmunit_retrieval_run, opts))
+            p = mp.Process(target=init_processes, args=(args, rank, retrieval_run, opts))
             p.start()
             processes.append(p)
 
@@ -47,12 +47,10 @@ def main(args, opts):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--mode', type=str, default='train', help='train, test')
-    parser.add_argument('--config_path', type=str, default='./configs/gmmunit_celeba.yaml')
+    parser.add_argument('--config_path', type=str, default='configs/retrieval_celeba.yaml')
     parser.add_argument('--resume_iter', type=int, default=0)
 
     # dirs
-    parser.add_argument('--sample_dir', type=str, default='expr/samples',
-                        help='Directory for saving generated images')
     parser.add_argument('--checkpoint_dir', type=str, default='expr/checkpoints',
                         help='Directory for saving network checkpoints')
 
@@ -66,27 +64,19 @@ if __name__ == '__main__':
     parser.add_argument('--backend', type=str, default='nccl', help='nccl | gloo')
 
     # data
-    parser.add_argument('--image_dir', type=str, default='./datasets/celeba/images')
-    parser.add_argument('--train_list_path', type=str, default='./datasets/celeba/list_attr_celeba-train.txt')
-    parser.add_argument('--test_list_path', type=str, default='./datasets/celeba/list_attr_celeba-val.txt')
-    parser.add_argument('--vgg_model_path', type=str, default='./pretrained_models/vgg16-397923af.pth')
-    parser.add_argument('--pretrained_gen_path', type=str, default='pretrained_models/gmmunit_gen.pth')
-    parser.add_argument('--pretrained_dis_path', type=str, default='pretrained_models/gmmunit_dis.pth')
-    parser.add_argument('--pretrained_ret_path', type=str, default='pretrained_models/gmmunit_ret.pth')
+    parser.add_argument('--image_dir', type=str, default='datasets/celeba/images')
+    parser.add_argument('--train_list_path', type=str, default='datasets/celeba/list_attr_celeba-train.txt')
+    parser.add_argument('--test_list_path', type=str, default='datasets/celeba/list_attr_celeba-val.txt')
+    parser.add_argument('--pretrained_path', type=str, default='pretrained_models/gmmunit_gen.pth')
     opts = parser.parse_args()
 
     args = get_config(opts.config_path)
     args['world_size']     = opts.world_size
     args['resume_iter']    = opts.resume_iter
-    args['sample_dir']     = opts.sample_dir
     args['checkpoint_dir'] = opts.checkpoint_dir
     args['image_dir']      = opts.image_dir
     args['train_list_path'] = opts.train_list_path
     args['test_list_path'] = opts.test_list_path
-    args['vgg_model_path'] = opts.vgg_model_path
-    args['img_embedding_path'] = opts.img_embedding_path
-    args['pretrained_gen_path'] = opts.pretrained_gen_path
-    args['pretrained_dis_path'] = opts.pretrained_dis_path
-    args['pretrained_ret_path'] = opts.pretrained_ret_path
+    args['pretrained_path'] = opts.pretrained_path
     main(args, opts)
 

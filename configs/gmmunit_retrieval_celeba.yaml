@@ -1,0 +1,71 @@
+dataset_name: CelebA          # dataset name              
+
+# trianing
+total_epochs: 20
+warmup_epochs: 2
+lr: 0.01 
+scheduler_type: cosine        # [cosine/step]
+batch_size: 32
+num_workers: 0
+
+save_every: 10000
+print_every: 40
+valid_every: 10000
+
+gan_type: lsgan               # GAN loss [lsgan/wgan]
+
+# loss weights
+lambda_recx: 10
+lambda_rec: 1
+lambda_adv: 1
+lambda_cyc: 10
+lambda_cls: 1
+lambda_kl: 0.1
+lambda_gp: 1
+lambda_vgg: 0.1
+
+# data 
+crop_size: 178
+img_size: 128
+is_retrieval: True
+num_cls: 5
+attr_dim: 8
+
+# retrieval 
+topk: 3
+
+# gmmunit generator
+gen:
+  input_dim: 3                # number of image channels [1/3]
+  gf_dim: 64                  # number of filters in the bottommost layer
+  n_res: 4                    # number of residual blocks in content encoder/decoder
+  activ: relu                 # activation function
+  pad_type: reflect           # padding type [zero/reflect]
+  mlp_dim: 256                # number of filters in MLP
+  attr_dim: 8                 # length of style code of each domain
+  num_cls: 5                  # selected attributes of face
+  n_downsample: 2             # number of downsampling
+  use_attention: False        # using attention [True/False]
+
+# discriminator
+dis:
+  input_dim: 3                # number of image channels [1/3]
+  n_layer: 5                  # number of layers in D
+  df_dim: 64                  # number of filters in the bottommost layer
+  norm: none                  # normalization layer
+  activ: lrelu                # activation function
+  pad_type: reflect           # padding type [zero/reflect]
+  num_cls: 5                  # selected attributes of face
+  num_scales: 2               # number of scales
+  img_size: 128
+
+# retrieval model
+ret:
+  num_layers: 3
+  hidden_size: 512
+  embed_dim: 100
+  norm: ln
+  activ: relu
+  pad_type: reflect
+  attr_dim: 8
+  num_cls: 5

@@ -1,0 +1,54 @@
+dataset_name: CelebA          # dataset name              
+
+# trianing
+total_epochs: 20
+warmup_epochs: 2
+lr: 0.01 
+scheduler_type: cosine        # [cosine/step]
+batch_size: 128
+num_workers: 0
+
+save_every: 2000
+print_every: 40
+valid_every: 2000
+
+# data 
+crop_size: 178
+img_size: 128
+is_retrieval: True
+num_cls: 5
+attr_dim: 8
+
+# triplet loss options
+margin: 0.2
+norm_degree: 2
+
+triplets: 
+  easy: True                  # Triplets configuration: 1 is use, 0 is don't use
+  medium: True
+  hard: True
+  hardest: True
+
+# gmmunit generator
+gen:
+  input_dim: 3                # number of image channels [1/3]
+  gf_dim: 64                  # number of filters in the bottommost layer
+  n_res: 4                    # number of residual blocks in content encoder/decoder
+  activ: relu                 # activation function
+  pad_type: reflect           # padding type [zero/reflect]
+  mlp_dim: 256                # number of filters in MLP
+  attr_dim: 8                 # length of style code of each domain
+  num_cls: 5                  # selected attributes of face
+  n_downsample: 2             # number of downsampling
+  use_attention: False        # using attention [True/False]
+
+# retrieval model
+ret:
+  num_layers: 3
+  hidden_size: 512
+  embed_dim: 100
+  norm: ln
+  activ: relu
+  pad_type: reflect
+  attr_dim: 8
+  num_cls: 5

@@ -15,7 +15,7 @@ import torch.multiprocessing as mp
 import torch.distributed as distributed
 
 from core import (
-    gmmunit_retrieval_run,
+    gmmunit_run,
     get_config
 )
 
@@ -35,7 +35,7 @@ def main(args, opts):
         mp.set_start_method('spawn')
         processes = []
         for rank in range(opts.num_gpus):
-            p = mp.Process(target=init_processes, args=(args, rank, gmmunit_retrieval_run, opts))
+            p = mp.Process(target=init_processes, args=(args, rank, gmmunit_run, opts))
             p.start()
             processes.append(p)
 
@@ -70,9 +70,6 @@ if __name__ == '__main__':
     parser.add_argument('--train_list_path', type=str, default='./datasets/celeba/list_attr_celeba-train.txt')
     parser.add_argument('--test_list_path', type=str, default='./datasets/celeba/list_attr_celeba-val.txt')
     parser.add_argument('--vgg_model_path', type=str, default='./pretrained_models/vgg16-397923af.pth')
-    parser.add_argument('--pretrained_gen_path', type=str, default='pretrained_models/gmmunit_gen.pth')
-    parser.add_argument('--pretrained_dis_path', type=str, default='pretrained_models/gmmunit_dis.pth')
-    parser.add_argument('--pretrained_ret_path', type=str, default='pretrained_models/gmmunit_ret.pth')
     opts = parser.parse_args()
 
     args = get_config(opts.config_path)
@@ -84,9 +81,5 @@ if __name__ == '__main__':
     args['train_list_path'] = opts.train_list_path
     args['test_list_path'] = opts.test_list_path
     args['vgg_model_path'] = opts.vgg_model_path
-    args['img_embedding_path'] = opts.img_embedding_path
-    args['pretrained_gen_path'] = opts.pretrained_gen_path
-    args['pretrained_dis_path'] = opts.pretrained_dis_path
-    args['pretrained_ret_path'] = opts.pretrained_ret_path
     main(args, opts)
 

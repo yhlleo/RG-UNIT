@@ -20,7 +20,6 @@ from .models import (
     RetrievalNet
 )
 
-from .basic_modules import VGG16
 from .utils import (
     assign_gmm_componet,
     dist_sampling_split,

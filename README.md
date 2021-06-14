@@ -114,7 +114,7 @@ $
 
  - GMM-UNIT with self-attention:
 
-[](figures/gmm-unit-test-att.jpg)
+![](figures/gmm-unit-test-att.jpg)
 
 |Name|Description|Download Link|
 |:----|:----|:----:|

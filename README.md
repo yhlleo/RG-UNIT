@@ -118,8 +118,8 @@ $
 
 |Name|Description|Download Link|
 |:----|:----|:----:|
-|`gmmunit_gen.pth`|Pretrained generator of GMM-UNIT model|:ok_hand:[link](https://drive.google.com/file/d/1e9xED3FqsWdZA1a90MNWt2U0fAr29O8o/view?usp=sharing)|
-|`gmmunit_dis.pth`|Pretrained discriminator of GMM-UNIT model|:ok_hand:[link](https://drive.google.com/file/d/1v410br_zBZI_YGrzEy5tig2c6ySqbI-7/view?usp=sharing)|
+|`gmmunit_gen.pth`|Pretrained generator of GMM-UNIT model|[link](https://drive.google.com/file/d/1e9xED3FqsWdZA1a90MNWt2U0fAr29O8o/view?usp=sharing)|
+|`gmmunit_dis.pth`|Pretrained discriminator of GMM-UNIT model|[link](https://drive.google.com/file/d/1v410br_zBZI_YGrzEy5tig2c6ySqbI-7/view?usp=sharing)|
 |`gmmunit_ret.pth`|Pretrained retrieval network|[link]()|
 |`image_embeddings.pth`|Image embeddings extracted by the pretrained model on the training images of CelebA|[link]()|
 |`rgunit_gen.pth`|generator of RG-UNIT model|[link]()|

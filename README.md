@@ -92,6 +92,11 @@ $ sh train_gmmunit_retrieval.sh
 
 Here, we release the pretrained models in Google Drive:
 
+
+ - Without using self-attention:
+
+![](./figures/gmm-unit-test-noatt.jpg)
+
 |Name|Description|Download Link|
 |:----|:----|:----:|
 |`gmmunit_gen.pth`|Pretrained generator of GMM-UNIT model|[link]()|

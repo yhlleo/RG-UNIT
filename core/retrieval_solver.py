@@ -32,7 +32,7 @@ from .utils import (
     load_pretrained_model
 )
 
-from data import build_loader, build_dataset
+from data import build_loader, build_dataset, build_ret_loader
 from .optims import (
     build_scheduler,
     build_optimizer
@@ -162,6 +162,26 @@ def validation(
             all_samples += dis_anc2pos.size(0)
     return correct.float()/all_samples
 
+@torch.no_grad()
+def collect_embeddings(
+    data_loader,
+    g_model,
+    r_model,
+    device=None
+): 
+    image_embeddings = {}
+    for _, data_iter in enumerate(data_loader):
+        img, fname, _, lab = data_iter
+        img = img.to(device)
+
+        img_cont, img_sty = g_model.encode(img)
+        embeddings = r_model(img_cont, img_sty)
+        for idx, emb in enumerate(embeddings):
+            image_embeddings[fname[idx]] = {}
+            image_embeddings[fname[idx]]['emb'] = emb.cpu()
+    return image_embeddings
+
+
 def retrieval_run(args, local_rank):
     print(distributed.get_rank())
     if args['world_size'] > 1:
@@ -276,3 +296,24 @@ def retrieval_run(args, local_rank):
 
             cur_step += 1
 
+    # save the image embeddings:
+    if mark_flag:
+        data_loader = build_ret_loader(
+            args['image_dir'],
+            args['train_list_path'],
+            args['crop_size'],
+            args['img_size'],
+            args['dataset_name'],
+            args['batch_size'], 
+            args['num_workers']
+        )
+        image_embeddings = collect_embeddings(
+            data_loader,
+            gen_model.eval(),
+            ret_model.eval(),
+            device
+        )
+
+        save_path = os.path.join(args['checkpoint_dir'], 'image_embeddings.pth')
+        torch.save(image_embeddings, save_path)
+        print('Saving image embeddings into %s...' % save_path)

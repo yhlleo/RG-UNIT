@@ -127,3 +127,41 @@ def build_ret_transform(
     transform.append(T.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5)))
     transform = T.Compose(transform)
     return transform
+
+
+def build_ret_loader(
+    image_dir, 
+    train_list_path,
+    crop_size=178,
+    img_size=128,
+    dataset_name='CelebA',
+    batch_size=16,
+    pin_memory=True,
+    num_workers=4
+): 
+    transform = build_ret_transform(crop_size, img_size, dataset_name)
+    if dataset_name == "CelebA":
+        dataset = CelebA_test(
+            image_dir, 
+            train_list_path, 
+            None, 
+            transform=transform, 
+            is_train=True
+        )
+    else:
+        dataset = Cat2Dog_test(
+            image_dir, 
+            train_list_path, 
+            None, 
+            transform=transform, 
+            is_train=True
+        )
+    data_loader = DataLoader(
+        dataset,
+        batch_size=batch_size,
+        shuffle=False,
+        num_workers=num_workers,
+        pin_memory=pin_memory,
+        drop_last=False
+    )
+    return data_loader

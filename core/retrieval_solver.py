@@ -145,14 +145,18 @@ def convert_triplets(inputs, args, g_model, device):
 @torch.no_grad()
 def validation(
     val_loader, 
+    args,
     r_model,
+    g_model,
     margin=0.2,
-    norm_degree=2
+    norm_degree=2,
+    device=None
 ):
     correct = 0
     all_samples = 0
     for idx, val in enumerate(val_loader):
-        triplets = convert_triplets(val)
+        val = [v.to(device) for v in val]
+        triplets = convert_triplets(val, args, g_model, device)
         for tp in triplets:
             anc, pos, neg = built_triplet(r_model, *tp)
             dis_anc2pos = F.pairwise_distance(anc, pos, p=norm_degree)
@@ -291,7 +295,15 @@ def retrieval_run(args, local_rank):
 
             # validation
             if mark_flag and (cur_step+1) % args['valid_every'] == 0:
-                correct = validation(test_loader, ret_model, args['margin'], args['norm_degree'])
+                correct = validation(
+                    test_loader, 
+                    args,
+                    ret_model, 
+                    gen_model,
+                    args['margin'], 
+                    args['norm_degree'],
+                    device
+                )
                 print("Val correctness: %.4f" % correct.item())
 
             cur_step += 1

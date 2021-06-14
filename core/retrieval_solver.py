@@ -310,6 +310,11 @@ def retrieval_run(args, local_rank):
 
     # save the image embeddings:
     if mark_flag:
+        # save the finale models
+        save_checkpoint(ret_model, args['checkpoint_dir'], cur_step+1, "ret")
+        save_checkpoint(ret_ema, args['checkpoint_dir'], cur_step+1, "ret_ema")
+        
+        # collect image embeddings
         data_loader = build_ret_loader(
             args['image_dir'],
             args['train_list_path'],

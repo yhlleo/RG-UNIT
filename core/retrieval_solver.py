@@ -158,7 +158,7 @@ def validation(
         val = [v.to(device) for v in val]
         triplets = convert_triplets(val, args, g_model, device)
         for tp in triplets:
-            anc, pos, neg = built_triplet(r_model, *tp)
+            anc, pos, neg = built_triplet(r_model, tp)
             dis_anc2pos = F.pairwise_distance(anc, pos, p=norm_degree)
             dis_anc2neg = F.pairwise_distance(anc, neg, p=norm_degree)
 

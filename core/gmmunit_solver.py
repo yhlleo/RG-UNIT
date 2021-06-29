@@ -84,7 +84,7 @@ def compute_g_loss(
     # Encode the source image and self-reconstruction
     cont_src, sty_src = gen_model.encode(src_img)
     src_img_rec, src_att_rec = gen_model.decode(
-        cont_src, torch.cat(sty_src,dim=1))
+        cont_src, torch.cat(sty_src[0],dim=1))
     if use_attention:
         src_img_rec = src_img_rec*src_att_rec + src_img*(1-src_att_rec)
     loss_rec = criterion_l1(src_img, src_img_rec) 
@@ -96,14 +96,14 @@ def compute_g_loss(
             z_trg = style_replace(
                 gmm_src, 
                 gmm_trg, 
-                torch.stack(sty_src, dim=1),  # [N, S*D]
+                torch.stack(sty_src[0], dim=1),  # [N, S*D]
                 z_trg.view(batch_size, -1, attr_dim)
             ).view(batch_size, -1)    # [N, S*D]
         img_fake, att_fake = gen_model.decode(cont_src, z_trg)
     else:
         _, sty_trg = gen_model.encode(trg_img)
         img_fake, att_fake = gen_model.decode(
-            cont_src, torch.cat(sty_trg,dim=1))
+            cont_src, torch.cat(sty_trg[0],dim=1))
     if use_attention:
         img_fake = img_fake*att_fake + src_img*(1-att_fake)
     loss_gen = calc_g_loss(
@@ -122,7 +122,7 @@ def compute_g_loss(
 
     # cycle consistency
     cyc_img, cyc_att = gen_model.decode(
-        cont_fake, torch.cat(sty_src,dim=1))
+        cont_fake, torch.cat(sty_src[0],dim=1))
     if use_attention:
         cyc_img = cyc_img*cyc_att + src_img*(1-cyc_att)
     loss_cyc = criterion_l1(cyc_img, src_img)
@@ -130,11 +130,18 @@ def compute_g_loss(
     # cycle encode style
     _, sty_cyc = gen_model.encode(cyc_img)
     loss_cyc_sty = criterion_l1(
-        torch.cat(sty_src,dim=1), 
-        torch.cat(sty_cyc,dim=1))
+        torch.cat(sty_src[0],dim=1), 
+        torch.cat(sty_cyc[0],dim=1)
+    )
 
     # KL loss
-    loss_kl = criterion_kl(torch.stack(sty_src,dim=1), gmm_src.unsqueeze(2))
+    loss_kl = criterion_kl(
+        torch.stack(sty_src[0],dim=1), 
+        gmm_src.unsqueeze(2),
+        torch.stack(sty_src[1],dim=1),
+        kl_mode=args['kl_mode'],
+        device=device
+    )
 
     gen_loss = loss_gen + \
                loss_rec * args['lambda_recx'] + \
@@ -184,14 +191,14 @@ def compute_d_loss(
             z_trg = style_replace(
                 gmm_src, 
                 gmm_trg, 
-                torch.stack(sty_src, dim=1),  # [N, S*D]
+                torch.stack(sty_src[0], dim=1),  # [N, S*D]
                 z_trg.view(batch_size, -1, attr_dim)
             ).view(batch_size, -1)    # [N, S*D]
         img_fake, att_fake = gen_model.decode(cont_src, z_trg)
     else:
         _, sty_trg = gen_model.encode(trg_img)
         img_fake, att_fake = gen_model.decode(
-            cont_src, torch.cat(sty_trg,dim=1))
+            cont_src, torch.cat(sty_trg[0],dim=1))
 
     if use_attention:
         img_fake = img_fake*att_fake + src_img*(1-att_fake)

@@ -92,10 +92,23 @@ def save_checkpoint(model, checkpoint_dir, step, suffix="gen"):
     torch.save(model.state_dict(), fname)
 
 
+#def load_checkpoint(model, checkpoint_dir, resume_iter=-1, suffix='gen_ema'):
+#    if resume_iter > 0:
+#        model_resume_path = os.path.join(checkpoint_dir, "{:08d}_{}.pth".format(resume_iter, suffix))
+#        load_pretrained_model(model, model_resume_path)
+
 def load_checkpoint(model, checkpoint_dir, resume_iter=-1, suffix='gen_ema'):
     if resume_iter > 0:
-        model_resume_path = os.path.join(checkpoint_dir, "{:08d}_{}.pth".format(resume_iter, suffix))
-        load_pretrained_model(model, model_resume_path)
+        model_path = os.path.join(checkpoint_dir, "{:08d}_{}.pth".format(resume_iter, suffix))
+        state_dict = torch.load(model_path, map_location='cpu')
+        print("Loading checkpoint from {}...".format(model_path))
+
+        current_state_dict = model.state_dict()
+        for name in current_state_dict:
+            if name in state_dict:
+                current_state_dict[name] = state_dict[name]
+        model.load_state_dict(current_state_dict)
+
 
 def load_pretrained(pretrained_path):
     assert os.path.exists(pretrained_path), "No such file or folder: {} ...".format(pretrained_path)
@@ -148,7 +161,7 @@ def debug_image(
     # Encode the source image and self-reconstruction
     cont_src, sty_src = g_model.encode(src_img)
     src_img_rec, src_att_rec = g_model.decode(
-        cont_src, torch.cat(sty_src,dim=1))
+        cont_src, torch.cat(sty_src[0],dim=1))
     if use_attention:
         src_img_rec = src_img_rec*src_att_rec + src_img*(1-src_att_rec)
     outputs += [src_img_rec]
@@ -157,7 +170,7 @@ def debug_image(
     # style transfer
     _, sty_trg = g_model.encode(trg_img)
     img_fake, att_fake = g_model.decode(
-        cont_src, torch.cat(sty_trg,dim=1))
+        cont_src, torch.cat(sty_trg[0],dim=1))
     if use_attention:
         img_fake = img_fake*att_fake + src_img*(1-att_fake)
     outputs += [img_fake]

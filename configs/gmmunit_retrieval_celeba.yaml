@@ -13,6 +13,7 @@ print_every: 40
 valid_every: 10000
 
 gan_type: lsgan               # GAN loss [lsgan/wgan]
+kl_mode: kl                   # [kl/em]
 
 # loss weights
 lambda_recx: 10

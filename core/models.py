@@ -88,14 +88,14 @@ class AdaINGen(nn.Module):
 
     def forward(self, x):
         # reconstruct an image
-        content, style = self.encode(x)
-        return self.decode(content, torch.cat(style,dim=1))
+        content, styles = self.encode(x)
+        return self.decode(content, torch.cat(styles[0],dim=1))
 
     def encode(self, x):
         # encode an image to its content and style codes
-        style   = self.enc_style(x)
+        styles  = self.enc_style(x)
         content = self.enc_content(x)
-        return content, style
+        return content, styles
 
     def decode(self, content, style):
         # decode content and style codes to an image
@@ -197,15 +197,15 @@ class AdaINGenRet(nn.Module):
 
     def forward(self, images, retrieved_images):
         # reconstruct an image
-        content, style = self.encode(images)
+        content, styles = self.encode(images)
         feats_ret = self.encode_retrieved(retrieved_images)
-        return self.decode(content, torch.cat(style,dim=1), feats_ret)
+        return self.decode(content, torch.cat(styles[0],dim=1), feats_ret)
 
     def encode(self, images):
         # encode an image to its content and style codes
-        style   = self.enc_style(images)
+        styles  = self.enc_style(images)
         content = self.enc_content(images)
-        return content, style
+        return content, styles
 
     def encode_retrieved(self, retrieved_images):
         sz = retrieved_images.size() # [bsz, k, 3, H, W]

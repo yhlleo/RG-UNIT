@@ -96,12 +96,36 @@ def calc_g_loss(
         loss += criterion_ce(fcls, target_cls, dataset) * lambda_cls
     return loss
 
-def criterion_kl(pred_mu, gt_mu):
+def criterion_earth_mover_distance(pred_mu, gt_mu):
     """
     :param: pred, extracted attribute vector with shape [N, d, V]
     :param: mus, mean tensor with shape [N, d, 1]
     """
     return torch.pow(pred_mu-gt_mu, 2).mean(dim=2).mean()
+
+def criterion_kl_distance(pred_mu, pred_sigma, gt_mu, gt_sigma=None, device=None):
+    """
+    :param: pred_mu, extracted attribute vector with shape [N, d, V]
+    :param: pred_sigma, extracted attribute vector with shape [N, d, V]
+    :param: mus, mean tensor with shape [N, d, 1]
+    """
+    sigma = torch.tensor(0.25).to(device) if gt_sigma is None else gt_sigma
+    return (0.5 * (torch.log(sigma/pred_sigma.exp()) + \
+        (pred_sigma.exp() + torch.pow(pred_mu-gt_mu, 2))/sigma - 1.0)).sum(dim=1).mean()
+
+def criterion_kl(
+    pred_mu, 
+    gt_mu,
+    pred_sigma=None,
+    gt_sigma=None,
+    kl_mode="kl", # KL or Earth mover
+    device=None
+): 
+    if kl_mode == 'kl':
+        return criterion_kl_distance(pred_mu, pred_sigma, gt_mu, gt_sigma, device)
+    else:
+        return criterion_earth_mover_distance(pred_mu, gt_mu)
+
 
 def criterion_l1(x, y):
     return torch.mean(torch.abs(x - y))

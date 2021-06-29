@@ -86,7 +86,7 @@ def convert_triplets(inputs, args, g_model, device):
 
     # collect content and style features from real images, extracted by frozen pretrained model
     img_anc_cont, img_anc_sty = g_model.encode(img_anc)
-    img_anc_sty = torch.cat(img_anc_sty, dim=1)
+    img_anc_sty = torch.cat(img_anc_sty[0], dim=1)
     img_neg_cont, _ = g_model.encode(img_neg)
 
     # sampling style codes 
@@ -125,7 +125,7 @@ def convert_triplets(inputs, args, g_model, device):
     if args['triplets']['hard']:
         img_anc2rnd = g_decoder(g_model.decode, img_anc, img_anc_cont, z_rnd, use_attention)
         img_anc2rnd_cont, img_anc2rnd_sty = g_model.encode(img_anc2rnd)
-        img_anc2rnd_sty = torch.cat(img_anc2rnd_sty, dim=1)
+        img_anc2rnd_sty = torch.cat(img_anc2rnd_sty[0], dim=1)
         triplets.append([
             img_anc_cont, z_trg,
             img_anc2trg_cont, img_anc2trg_sty,
@@ -134,7 +134,7 @@ def convert_triplets(inputs, args, g_model, device):
     if args['triplets']['hardest']:
         img_anc2rec = g_decoder(g_model.decode, img_anc, img_anc_cont, img_anc_sty, use_attention)
         img_anc2rec_cont, img_anc2rec_sty = g_model.encode(img_anc2rec)
-        img_anc2rec_sty = torch.cat(img_anc2rec_sty, dim=1)
+        img_anc2rec_sty = torch.cat(img_anc2rec_sty[0], dim=1)
         triplets.append([
             img_anc_cont, z_trg,
             img_anc2trg_cont, img_anc2trg_sty,

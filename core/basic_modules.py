@@ -338,19 +338,22 @@ class StyleEncoder(nn.Module):
         self.model += [nn.AdaptiveAvgPool2d(1)] # global average pooling
         self.model = nn.Sequential(*self.model)
 
-        self.fcs = nn.ModuleList()
+        self.fcs    = nn.ModuleList()
+        self.fcvars = nn.ModuleList()
         for _ in range(self.num_class):
             self.fcs.append(nn.Linear(dim, attr_dim))
+            self.fcvars.append(nn.Linear(dim, attr_dim))
         self.output_dim = dim
 
     def forward(self, x):
         feats  = self.model(x)
         feats = feats.view(x.size(0), -1)
 
-        fcs = []
+        fcs, fcvars = [], []
         for i in range(self.num_class):
             fcs.append(self.fcs[i](feats))
-        return fcs
+            fcvars.append(self.fcvars[i](feats))
+        return fcs, fcvars
 
 class ContentEncoder(nn.Module):
     def __init__(self,

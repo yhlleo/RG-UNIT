@@ -15,6 +15,7 @@ attention_warmup_epochs: 2
 kl_warmup_epochs: 5
 
 gan_type: lsgan               # GAN loss [lsgan/wgan]
+kl_mode: kl                   # [kl/em]
 
 # loss weights
 lambda_recx: 10
